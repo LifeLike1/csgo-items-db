@@ -51,6 +51,12 @@ class FieldsCollector:
             if str(item_data["defindex"]) == defindex:
                 return categories_mapping[self.csgo_english[item_data["item_type_name"][1:].lower()].lower()]
 
+    def _find_description(self, defindex: str) -> str:
+        prefab: str = self.items_game["items"][defindex]["prefab"]
+        item_description_id: str = self.items_game["prefabs"][prefab]["item_description"][1:].lower()
+        if item_description_id in self.csgo_english:
+            return self.csgo_english[item_description_id]
+
     def _parse_types(self) -> dict[str, dict[str, str]]:
         types = {}
 
@@ -61,6 +67,8 @@ class FieldsCollector:
                     "name": self._find_item_name(defindex),
                     "category": self._find_category(defindex),
                 }
+                if description := self._find_description(defindex):
+                    types[defindex]["description"] = description
             except KeyError:
                 pass
         return types
