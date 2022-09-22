@@ -16,7 +16,7 @@ from ._fields import FieldsCollector
 from ._items import ItemsCollector
 from ._sticker_kits import StickerPatchCollector
 from ._cases import CasesCollector
-
+from ._collections import CollectionsCollector
 
 # https://stackoverflow.com/a/287944
 class BCOLORS:
@@ -100,6 +100,9 @@ class ResourceCollector:
         cases_collector = CasesCollector(items_game, csgo_english, items_schema)
         cases = cases_collector()
 
+        collection_collector = CollectionCollector(items_game, csgo_english, items_schema)
+        collections = collection_collector()
+
         items_collector = ItemsCollector(
             items_game, csgo_english, items_schema, items_cdn, paints, types, categories, cases
         )
@@ -118,6 +121,7 @@ class ResourceCollector:
             ("rarities.json", rarities),
             ("origins.json", origins),
             ("cases.json", cases),
+            ("collections.json", collections),
             ("items.json", items),
             ("sticker_kits.json", sticker_kits),
             ("tints.json", tints),
