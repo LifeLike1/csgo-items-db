@@ -83,6 +83,19 @@ class FieldsCollector:
         code_name: str = self.items_game["paint_kits"][paintindex]["description_tag"][1:]
         return self.csgo_english[code_name.lower()]
 
+    def _find_paint_kit_colors(self, paintindex: str) -> list[str]:
+        colors: list[str] = []
+        i = 0 
+        while True:
+            try:
+                color = self.items_game["paint_kits"][paintindex][f"color{i}"].replace(" ", ", ")
+                colors.append(f"rgb({color})")
+                i += 1
+            except:
+                break
+        if len(colors) > 0:
+            return colors
+
     def _parse_paints(self):
         # paints with paintindex bigger than 999/1000 are real?
         paints = {}
@@ -92,6 +105,7 @@ class FieldsCollector:
                     "name": self._define_paints(paintindex),
                     "wear_min": float(paint_data.get("wear_remap_min", self._WEAR_MIN_DEFAULT)),
                     "wear_max": float(paint_data.get("wear_remap_max", self._WEAR_MAX_DEFAULT)),
+                    "colors": self._find_paint_kit_colors(paintindex),
                 }
 
                 if "doppler" in paint["name"].lower() and (phase := self.phases_mapping.get(paintindex)):
