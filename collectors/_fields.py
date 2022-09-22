@@ -51,11 +51,17 @@ class FieldsCollector:
             if str(item_data["defindex"]) == defindex:
                 return categories_mapping[self.csgo_english[item_data["item_type_name"][1:].lower()].lower()]
 
-    def _find_description(self, defindex: str) -> str:
+    def _find_description_type(self, defindex: str) -> str:
         prefab: str = self.items_game["items"][defindex]["prefab"]
         item_description_id: str = self.items_game["prefabs"][prefab]["item_description"][1:].lower()
         if item_description_id in self.csgo_english:
             return self.csgo_english[item_description_id]
+
+    def _find_description_paint_kit(self, paintindex: str) -> str:
+        description_string: str = self.items_game["paint_kits"][paintindex]["description_string"][1:].lower()
+        description = self.csgo_english[description_string]
+        if description := self.csgo_english[description_string]:
+            return description.replace("\n\n", " ").replace("<i>", "").replace("</i>", "").replace('\"', "")
 
     def _parse_types(self) -> dict[str, dict[str, str]]:
         types = {}
@@ -67,7 +73,7 @@ class FieldsCollector:
                     "name": self._find_item_name(defindex),
                     "category": self._find_category(defindex),
                 }
-                if description := self._find_description(defindex):
+                if description := self._find_description_type(defindex):
                     types[defindex]["description"] = description
             except KeyError:
                 pass
@@ -90,6 +96,9 @@ class FieldsCollector:
 
                 if "doppler" in paint["name"].lower() and (phase := self.phases_mapping.get(paintindex)):
                     paint["phase"] = phase
+
+                if description := self._find_description_paint_kit(paintindex):
+                    paint["description"] = description
 
                 paints[paintindex] = paint
             except KeyError:
