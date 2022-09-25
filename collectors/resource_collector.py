@@ -100,7 +100,7 @@ class ResourceCollector:
         cases_collector = CasesCollector(items_game, csgo_english, items_schema)
         cases = cases_collector()
 
-        collection_collector = CollectionCollector(items_game, csgo_english, items_schema)
+        collection_collector = CollectionCollector(pak, items_game, csgo_english, items_schema)
         collections = collection_collector()
 
         items_collector = ItemsCollector(
